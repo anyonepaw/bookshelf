@@ -31,7 +31,7 @@ public class BookDB implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+        createShelf();
     }
 
     private void createShelf() {
@@ -45,8 +45,12 @@ public class BookDB implements CommandLineRunner {
                 "print_year INTEGER NOT NULL ," +
                 "read_already BOOLEAN NOT NULL)");
 
-
+        bookService.create("fairyTales", "6 fairytales from great Russian writer", "Pushkin A.",
+                "4566856788", 2013);
+        bookService.create("Gone_with_the_wind", "6 fairytales from great Russian writer", "Pushkin A.",
+                "4566856788", 2013);
 
     }
+
 
 }

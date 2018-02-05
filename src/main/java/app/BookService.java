@@ -1,14 +1,19 @@
 package app;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookService {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public BookService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -24,5 +29,13 @@ public class BookService {
     • readAlready – читал ли кто-то эту книгу. Это булево поле.
     * */
 
+    public List<Map<String, Object>> list(){
+        return jdbcTemplate.queryForList("SELECT * FROM book_shelf");
+    }
 
+    public void create(String title, String description, String author, String isbn, int print_year){
+        String sql = "INSERT INTO book_shelf (id, title, description," +
+                " author, isbn, print_year, read_already) VALUES (?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql, null, title, description, author, isbn, print_year, false);
+    }
 }
