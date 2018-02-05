@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+    }
+}
+
+group 'com.xseagullx.angel'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework:spring-jdbc")
+    compile("com.h2database:h2")
+    compile("org.apache.tomcat:tomcat-jdbc")
+    runtime("org.apache.tomcat.embed:tomcat-embed-jasper")
+    runtime("javax.servlet:jstl")
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
