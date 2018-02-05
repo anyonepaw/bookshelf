@@ -1,11 +1,11 @@
 <html>
 
 <head>
-    <title>Edit page</title>
+    <title>create</title>
 </head>
 
 <div>
-    <form>
+    <form method="post" action="/bookshelf/create">
 
     <label for="2">Title      </label><input name="Title" value="Hello" id="2"/><Br>
     <label for="3">Description</label><input name="Description" value="World" id="3"/><Br>
@@ -14,6 +14,7 @@
     <label for="6">PrintYear  </label><input name="PrintYear" value="4541" id="6"/><Br>
 
     <input type="submit">
+
     </form>
 </div>
 

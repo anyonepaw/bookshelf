@@ -43,7 +43,8 @@ public class BookDB implements CommandLineRunner {
                 "author VARCHAR(100) NOT NULL," +
                 "isbn VARCHAR(20) NOT NULL, " +
                 "print_year INTEGER NOT NULL ," +
-                "read_already BOOLEAN NOT NULL)");
+                "read_already BOOLEAN NOT NULL" +
+                ")");
 
         bookService.create("fairyTales", "6 fairytales from great Russian writer", "Pushkin A.",
                 "4566856788", 2013);

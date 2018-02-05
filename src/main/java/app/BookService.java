@@ -38,4 +38,12 @@ public class BookService {
                 " author, isbn, print_year, read_already) VALUES (?,?,?,?,?,?,?)";
         jdbcTemplate.update(sql, null, title, description, author, isbn, print_year, false);
     }
+
+    public void delete(int id){
+        String sql = "DELETE FROM book_shelf WHERE id=?";
+        jdbcTemplate.update(sql,id);
+
+    }
+
+
 }
