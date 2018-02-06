@@ -1,6 +1,7 @@
 package app;
 
 
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Member;
+import java.util.HashMap;
 
 
 @Controller
@@ -30,8 +34,17 @@ public class BookController {
 
 
     @GetMapping("/bookshelf/create")
-    public String create() {
-        return "create";
+    public String create(Model model) {
+        HashMap<Object, Object> book = new HashMap<>();
+        book.put("title", "world");
+        book.put("description", "hello");
+        book.put("author", "pushkin");
+        book.put("isbn", "titlelo");
+        book.put("print_year", "2007");
+
+        model.addAttribute("book", book);
+        model.addAttribute("actionUrl", "/bookshelf/create");
+        return "update";
     }
 
 
@@ -50,20 +63,29 @@ public class BookController {
     public void delete(@PathVariable("id") int id) {
         System.out.println("hello!");
         bookService.delete(id);
-
     }
 
-    @GetMapping("/bookshelf/{id}/edit")
-    public String edit(@PathVariable("id") int id, Model model) {
-       model.addAttribute("book_with_that_id", )
-        return "edit";
+    @GetMapping("/bookshelf/update/{id}")
+    public String update(@PathVariable("id") int id, Model model, HttpServletResponse resp) {
+        if (bookService.get(id) != null) {
+            model.addAttribute("book", bookService.get(id));
+            model.addAttribute("actionUrl", "/bookshelf/update/" + id);
+            return "update";
+        }
+        resp.setStatus(404);
+        return null;
     }
 
-    @PutMapping("/bookshelf/{id}/edit")
-    public String edit(){
+    @PostMapping("/bookshelf/update/{id}")
+    public String update(HttpServletRequest httpServletRequest, @ModelAttribute("member") Member member) {
+        String title = httpServletRequest.getParameter("Title");
+        String description = httpServletRequest.getParameter("Description");
+        String author = httpServletRequest.getParameter("Author");
+        String isbn = httpServletRequest.getParameter("ISBN");
+        String year = httpServletRequest.getParameter("PrintYear");
 
+        return "redirect:/bookshelf";
     }
-
 
 
 }

@@ -18,13 +18,15 @@
             <td title="AUTHOR">${it.AUTHOR}</td>
             <td title="ISBN">${it.ISBN}</td>
             <td title="YEAR">${it.PRINT_YEAR}</td>
-            <td title="READ_ALREADY">${it.READ_ALREADY}</td>
-            <td><a onclick="deleteIt(${it.ID})">Delete</a></td>
+            <td title="READ_ALREADY" >${it.READ_ALREADY}</td>
+            <td ><a onclick="deleteIt(${it.ID})">Delete</a></td>
+            <td><a href="/bookshelf/update/${it.ID}">Update</a></td>
+                                             <%--<td><a onclick="updateIt(${it.ID})">Update</a></td>--%>
         </tr>
     </c:forEach>
     </tbody>
 </table>
-i'm a bookshelf
+
 
 <script src="http://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -46,7 +48,27 @@ i'm a bookshelf
    }
 </script>
 
-<a href="/bookshelf/create">Create</a>
+<script>
+    function updateIt(id) {
+        $.ajax({
+            url: '/bookshelf/update' + id,
+            type: 'UPDATE',
+            success: function(result) {
+
+                window.location = "/update"
+            },
+            error: function() {
+                alert('Whooops... Smth went wrong!');
+            }
+        });
+    }
+</script>
+
+
+
+<br>
+<a href="/bookshelf/create"><button>Create</button></a>
+
 
 </body>
 

@@ -2,6 +2,7 @@ package app;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,20 +30,29 @@ public class BookService {
     • readAlready – читал ли кто-то эту книгу. Это булево поле.
     * */
 
-    public List<Map<String, Object>> list(){
+    public List<Map<String, Object>> list() {
         return jdbcTemplate.queryForList("SELECT * FROM book_shelf");
     }
 
-    public void create(String title, String description, String author, String isbn, int print_year){
+    public void create(String title, String description, String author, String isbn, int print_year) {
         String sql = "INSERT INTO book_shelf (id, title, description," +
                 " author, isbn, print_year, read_already) VALUES (?,?,?,?,?,?,?)";
         jdbcTemplate.update(sql, null, title, description, author, isbn, print_year, false);
     }
 
-    public void delete(int id){
+    public void delete(int id) {
         String sql = "DELETE FROM book_shelf WHERE id=?";
-        jdbcTemplate.update(sql,id);
+        jdbcTemplate.update(sql, id);
 
+    }
+
+    public Map get(int id) {
+        try {
+            String sql = "SELECT * FROM book_shelf WHERE id=?";
+            return jdbcTemplate.queryForMap(sql, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 
