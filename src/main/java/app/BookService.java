@@ -30,8 +30,19 @@ public class BookService {
     • readAlready – читал ли кто-то эту книгу. Это булево поле.
     * */
 
-    public List<Map<String, Object>> list() {
-        return jdbcTemplate.queryForList("SELECT * FROM book_shelf");
+    public List<Map<String, Object>> list(int page) {
+
+        return jdbcTemplate.queryForList("SELECT * FROM book_shelf LIMIT 10 OFFSET ?", page*10);
+    }
+
+    public int countPages() {
+        String sql = "SELECT count(1) FROM book_shelf";
+        int allBooks = jdbcTemplate.queryForObject(sql, Integer.class);
+        return (int) Math.ceil(allBooks/10.0);
+    }
+
+    public List<Map<String, Object>> search(int offset, String title) {
+        return jdbcTemplate.queryForList("SELECT * FROM book_shelf WHERE LOWER(title) LIKE ? LIMIT 10 OFFSET ? ", "%" + title.toLowerCase() + "%");
     }
 
     public void create(String title, String description, String author, String isbn, int print_year) {
@@ -40,10 +51,8 @@ public class BookService {
         jdbcTemplate.update(sql, null, title, description, author, isbn, print_year, false);
     }
 
-    public void delete(int id) {
-        String sql = "DELETE FROM book_shelf WHERE id=?";
-        jdbcTemplate.update(sql, id);
-
+    public void delete(String id) {
+        jdbcTemplate.update("DELETE FROM book_shelf WHERE id =?", id);
     }
 
     public Map get(int id) {
@@ -53,6 +62,12 @@ public class BookService {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public void update(int id, String title, String description, String isbn, int print_year) {
+        String sql = "UPDATE book_shelf SET title = ?, description = ?, isbn=?, print_year=?, read_already=? WHERE id=?";
+        jdbcTemplate.update(sql, title, description, isbn, print_year, false, id); //ask about read_already
+
     }
 
 

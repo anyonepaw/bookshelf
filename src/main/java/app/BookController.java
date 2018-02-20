@@ -1,9 +1,7 @@
 package app;
 
 
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Member;
 import java.util.HashMap;
 
 
@@ -27,14 +24,18 @@ public class BookController {
 
 
     @GetMapping("/bookshelf")
-    public String show(Model model) {
-        model.addAttribute("bookShelf", bookService.list());
+    public String show(Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
+        model.addAttribute("bookShelf", bookService.list(page));
+        model.addAttribute("allPages", bookService.countPages());
+        model.addAttribute("page", page);
         return "bookshelf";
     }
 
 
     @GetMapping("/bookshelf/create")
     public String create(Model model) {
+
+
         HashMap<Object, Object> book = new HashMap<>();
         book.put("title", "world");
         book.put("description", "hello");
@@ -60,9 +61,9 @@ public class BookController {
     }
 
     @DeleteMapping("/bookshelf/{id}")
-    public void delete(@PathVariable("id") int id) {
-        System.out.println("hello!");
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
         bookService.delete(id);
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/bookshelf/update/{id}")
@@ -77,14 +78,24 @@ public class BookController {
     }
 
     @PostMapping("/bookshelf/update/{id}")
-    public String update(HttpServletRequest httpServletRequest, @ModelAttribute("member") Member member) {
+    public String update(HttpServletRequest httpServletRequest, @PathVariable("id") int id) {
+
         String title = httpServletRequest.getParameter("Title");
         String description = httpServletRequest.getParameter("Description");
-        String author = httpServletRequest.getParameter("Author");
         String isbn = httpServletRequest.getParameter("ISBN");
         String year = httpServletRequest.getParameter("PrintYear");
 
+        bookService.update(id, title, description, isbn, Integer.parseInt(year));
         return "redirect:/bookshelf";
+    }
+
+
+    @GetMapping("/bookshelf/search")
+    public String search(HttpServletRequest httpServletRequest, Model model,
+                         @RequestParam(name = "offset", defaultValue = "0") int offset) {
+        String title = httpServletRequest.getParameter("Query");
+        model.addAttribute("bookShelf", bookService.search(offset, title));
+        return "bookshelf";
     }
 
 
