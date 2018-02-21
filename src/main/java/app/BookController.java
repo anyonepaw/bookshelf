@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 
 
 @Controller
@@ -34,15 +37,7 @@ public class BookController {
 
     @GetMapping("/bookshelf/create")
     public String create(Model model) {
-
-
-        HashMap<Object, Object> book = new HashMap<>();
-        book.put("title", "world");
-        book.put("description", "hello");
-        book.put("author", "pushkin");
-        book.put("isbn", "titlelo");
-        book.put("print_year", "2007");
-
+        Book book = new Book(null,"world","hello","pushkin","titlelo",2007, false);
         model.addAttribute("book", book);
         model.addAttribute("actionUrl", "/bookshelf/create");
         return "update";
@@ -68,8 +63,9 @@ public class BookController {
 
     @GetMapping("/bookshelf/update/{id}")
     public String update(@PathVariable("id") int id, Model model, HttpServletResponse resp) {
-        if (bookService.get(id) != null) {
-            model.addAttribute("book", bookService.get(id));
+      Book book = bookService.get(id);
+      if (book != null) {
+            model.addAttribute("book", book);
             model.addAttribute("actionUrl", "/bookshelf/update/" + id);
             return "update";
         }

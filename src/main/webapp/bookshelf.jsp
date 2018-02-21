@@ -25,20 +25,22 @@
 
 <table border="1">
     <tbody>
+    <%--@elvariable id="bookShelf" type="java.util.List"--%>
     <c:forEach items="${bookShelf}" var="it">
+      <%--@elvariable id="it" type="app.Book"--%>
         <tr title="BookShelf">
-            <td title="ID">${it.ID}</td>
-            <td title="TITLE">${it.TITLE}</td>
-            <td title="DESCRIPTION">${it.DESCRIPTION}</td>
-            <td title="AUTHOR">${it.AUTHOR}</td>
-            <td title="ISBN">${it.ISBN}</td>
-            <td title="YEAR">${it.PRINT_YEAR}</td>
-            <td title="READ_ALREADY">${it.READ_ALREADY}</td>
+            <td title="ID">${it.id}</td>
+            <td title="TITLE">${it.title}</td>
+            <td title="DESCRIPTION">${it.description}</td>
+            <td title="AUTHOR">${it.author}</td>
+            <td title="ISBN">${it.isbn}</td>
+            <td title="YEAR">${it.printYear}</td>
+            <td title="READ_ALREADY">${it.readAlready}</td>
             <td>
-                <button><a onclick="deleteIt(${it.ID})">Delete</a></button>
+                <button><a onclick="deleteIt(${it.id})">Delete</a></button>
             </td>
             <td>
-                <button><a href="/bookshelf/update/${it.ID}">Update</a></button>
+                <button><a href="/bookshelf/update/${it.id}">Update</a></button>
             </td>
         </tr>
     </c:forEach>
@@ -72,8 +74,7 @@
             url: '/bookshelf/' + id,
             type: 'DELETE',
             success: function (result) {
-
-                window.location = "/bookshelf"
+                window.location.reload()
             },
             error: function () {
                 alert('Whooops... Smth went wrong!');
