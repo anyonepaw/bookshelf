@@ -41,6 +41,13 @@ public class BookServiceJPA implements BookService {
 		entityManager.remove(book);
 	}
 
+    @Transactional
+	public void read(Long id) {
+		Book book = entityManager.find(Book.class, id);
+		book.setReadAlready(true);
+		entityManager.merge(book);
+	}
+
 	public Book get(Long id) {
 		return entityManager.find(Book.class, id);
 	}

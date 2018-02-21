@@ -27,7 +27,7 @@
     <tbody>
     <%--@elvariable id="bookShelf" type="java.util.List"--%>
     <c:forEach items="${bookShelf}" var="it">
-      <%--@elvariable id="it" type="app.Book"--%>
+        <%--@elvariable id="it" type="app.Book"--%>
         <tr title="BookShelf">
             <td title="ID">${it.id}</td>
             <td title="TITLE">${it.title}</td>
@@ -35,7 +35,7 @@
             <td title="AUTHOR">${it.author}</td>
             <td title="ISBN">${it.isbn}</td>
             <td title="YEAR">${it.printYear}</td>
-            <td title="READ_ALREADY">${it.readAlready}</td>
+            <td><input type="checkbox" ${ it.readAlready ? "checked disabled" : "" } onclick="readIt(${it.id})"/></td>
             <td>
                 <button><a onclick="deleteIt(${it.id})">Delete</a></button>
             </td>
@@ -56,7 +56,6 @@
     ${allPages}
     <button onclick="nextPage()" id="next" ${ page==(allPages-1) ? "disabled" : "" }> &gt;</button>
 
-
 </div>
 
 <br>
@@ -66,7 +65,8 @@
 
 <script src="http://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+</script>
 
 <script>
     function deleteIt(id) {
@@ -81,15 +81,26 @@
             }
         });
     }
-</script>
 
-<script>
+    function readIt(id) {
+        $.ajax({
+            url: '/bookshelf/read/' + id,
+            type: 'POST',
+            success: function (result) {
+                window.location.reload()
+            },
+            error: function () {
+                alert('Whooops... Smth went wrong!');
+            }
+        });
+    }
+
 
     var page =  ${page};
 
     function getQuery() {
-      var value = document.getElementById("query").value;
-      return value ? ("&Query=" + value) : "";
+        var value = document.getElementById("query").value;
+        return value ? ("&Query=" + value) : "";
     }
 
     function nextPage() {
@@ -100,14 +111,11 @@
         window.location = window.location.pathname + "?page=" + (page - 1) + getQuery()
     }
 
-</script>
-
-<script>
 
     var allPages = ${allPages};
 
     function onChange(input) {
-        var pageValue = input.value-1;
+        var pageValue = input.value - 1;
         if (pageValue > 0 || pageValue < allPages) {
             window.location = window.location.pathname + "?page=" + pageValue + getQuery()
         } else {

@@ -61,6 +61,12 @@ public class BookController {
         return ResponseEntity.ok(null);
     }
 
+    @PostMapping("/bookshelf/read/{id}")
+    public ResponseEntity<Void> read(@PathVariable("id") Long id) {
+        bookService.read(id);
+        return ResponseEntity.ok(null);
+    }
+
     @GetMapping("/bookshelf/update/{id}")
     public String update(@PathVariable("id") Long id, Model model, HttpServletResponse resp) {
       Book book = bookService.get(id);

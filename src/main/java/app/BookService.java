@@ -15,6 +15,8 @@ public interface BookService {
 
 	void delete(Long id);
 
+	void read(Long id);
+
 	Book get(Long id);
 
 	void update(Long id, String title, String description, String isbn, int print_year);

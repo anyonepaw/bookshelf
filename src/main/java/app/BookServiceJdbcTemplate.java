@@ -2,6 +2,7 @@ package app;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+
 public class BookServiceJdbcTemplate implements BookService {
   private static final BeanPropertyRowMapper<Book> BOOK_MAPPER = new BeanPropertyRowMapper<>(Book.class);
   private final JdbcTemplate jdbcTemplate;
@@ -58,6 +60,10 @@ public class BookServiceJdbcTemplate implements BookService {
 
     @Override public void delete(Long id) {
         jdbcTemplate.update("DELETE FROM book_shelf WHERE id = ?", id);
+    }
+
+    @Override public void read(Long id) {
+        jdbcTemplate.update("UPDATE book_shelf SET read_already = true WHERE id = ?", id);
     }
 
     @Override public Book get(Long id) {
