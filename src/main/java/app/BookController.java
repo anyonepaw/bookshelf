@@ -56,13 +56,13 @@ public class BookController {
     }
 
     @DeleteMapping("/bookshelf/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         bookService.delete(id);
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/bookshelf/update/{id}")
-    public String update(@PathVariable("id") int id, Model model, HttpServletResponse resp) {
+    public String update(@PathVariable("id") Long id, Model model, HttpServletResponse resp) {
       Book book = bookService.get(id);
       if (book != null) {
             model.addAttribute("book", book);
@@ -74,7 +74,7 @@ public class BookController {
     }
 
     @PostMapping("/bookshelf/update/{id}")
-    public String update(HttpServletRequest httpServletRequest, @PathVariable("id") int id) {
+    public String update(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
 
         String title = httpServletRequest.getParameter("Title");
         String description = httpServletRequest.getParameter("Description");
@@ -88,9 +88,12 @@ public class BookController {
 
     @GetMapping("/bookshelf/search")
     public String search(HttpServletRequest httpServletRequest, Model model,
-                         @RequestParam(name = "offset", defaultValue = "0") int offset) {
+                         @RequestParam(name = "page", defaultValue = "0") int page) {
         String title = httpServletRequest.getParameter("Query");
-        model.addAttribute("bookShelf", bookService.search(offset, title));
+        model.addAttribute("bookShelf", bookService.search(page, title));
+        model.addAttribute("allPages", bookService.countPages(title));
+        model.addAttribute("page", page);
+        model.addAttribute("query", title);
         return "bookshelf";
     }
 

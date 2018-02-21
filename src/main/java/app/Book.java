@@ -1,5 +1,10 @@
 package app;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * ORM for book_shelf table
  * Данные, которые должны быть в таблице:
@@ -11,8 +16,10 @@ package app;
  • printYear – в каком году напечатана книга (INT);
  • readAlready – читал ли кто-то эту книгу. Это булево поле.
  * */
+@Entity
+@Table(name = "book_shelf")
 public class Book {
-	private Long id;
+	@Id @GeneratedValue private Long id;
 	private String title;
 	private String description;
 	private String author;

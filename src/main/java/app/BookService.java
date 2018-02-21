@@ -1,73 +1,21 @@
 package app;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Map;
 
-@Service
-public class BookService {
-  private static final BeanPropertyRowMapper<Book> BOOK_MAPPER = new BeanPropertyRowMapper<>(Book.class);
-  private final JdbcTemplate jdbcTemplate;
+public interface BookService {
+	List<Book> list(int page);
 
-    @Autowired
-    public BookService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+	int countPages();
 
-    /*
-    * Данные, которые должны быть в таблице:
-    • id – идентификатор книги в БД;
-    • title – название книги. Можно использовать тип VARCHAR(100);
-    • description – краткое описание о чем книга. Можно использовать тип VARCHAR(255);
-    • author – фамилия и имя автора. Можно использовать тип VARCHAR(100);
-    • isbn – ISBN книги. Можно использовать тип VARCHAR(20);
-    • printYear – в каком году напечатана книга (INT);
-    • readAlready – читал ли кто-то эту книгу. Это булево поле.
-    * */
+	int countPages(String title);
 
-    public List<Book> list(int page) {
-      return jdbcTemplate.query("SELECT * FROM book_shelf order by id LIMIT 10 OFFSET ?", BOOK_MAPPER, page * 10);
-    }
+	List<Book> search(int offset, String title);
 
-    public int countPages() {
-        String sql = "SELECT count(1) FROM book_shelf";
-        int allBooks = jdbcTemplate.queryForObject(sql, Integer.class);
-        return (int) Math.ceil(allBooks / 10.0);
-    }
+	void create(String title, String description, String author, String isbn, int print_year);
 
-    public List<Map<String, Object>> search(int offset, String title) {
-        return jdbcTemplate.queryForList("SELECT * FROM book_shelf WHERE LOWER(title) LIKE ? order by id LIMIT 10 OFFSET ?", "%" + title.toLowerCase() + "%");
-    }
+	void delete(Long id);
 
-    public void create(String title, String description, String author, String isbn, int print_year) {
-        String sql = "INSERT INTO book_shelf (id, title, description," +
-                " author, isbn, print_year, read_already) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, null, title, description, author, isbn, print_year, false);
-    }
+	Book get(Long id);
 
-    public void delete(String id) {
-        jdbcTemplate.update("DELETE FROM book_shelf WHERE id = ?", id);
-    }
-
-    public Book get(int id) {
-        try {
-            String sql = "SELECT * FROM book_shelf WHERE id = ?";
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Book.class), id);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    public void update(int id, String title, String description, String isbn, int print_year) {
-        String sql = "UPDATE book_shelf SET title = ?, description = ?, isbn = ?, print_year = ?, read_already = ? WHERE id = ?";
-        jdbcTemplate.update(sql, title, description, isbn, print_year, false, id); //ask about read_already
-    }
-
-
+	void update(Long id, String title, String description, String isbn, int print_year);
 }
